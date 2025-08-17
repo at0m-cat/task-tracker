@@ -37,27 +37,28 @@ public class ProjectController {
 
     @PostMapping(CREATE_PROJECT)
     public ProjectDto createProject(
-            @RequestParam(value = "project_name", required = false) String projectName
+            @RequestParam(value = "project_name", required = false) Optional<String> optionalProjectName
     ) {
 
-        if (projectName == null || projectName.trim().isEmpty()) {
-            throw new BadRequestException("Name can't be is empty.");
-        }
+        optionalProjectName = optionalProjectName.filter(name -> !name.trim().isEmpty());
 
-        return service.createProject(projectName);
+        return optionalProjectName
+                .map(service::createProject)
+                .orElseThrow(() -> new BadRequestException("Name can't be is empty."));
+
     }
 
     @PatchMapping(EDIT_PROJECT)
     public ProjectDto editProject(
             @PathVariable("project_id") Long projectId,
-            @RequestParam(value = "project_name", required = false) String projectName
+            @RequestParam(value = "project_name", required = false) Optional<String> optionalProjectName
     ) {
 
-        if (projectName == null || projectName.trim().isEmpty()) {
-            throw new BadRequestException("Name can't be is empty.");
-        }
+        optionalProjectName = optionalProjectName.filter(name -> !name.trim().isEmpty());
 
-        return service.editProject(projectId, projectName);
+        return optionalProjectName
+                .map(projectName -> service.editProject(projectId, projectName))
+                .orElseThrow(() -> new BadRequestException("Name can't be is empty."));
 
     }
 
