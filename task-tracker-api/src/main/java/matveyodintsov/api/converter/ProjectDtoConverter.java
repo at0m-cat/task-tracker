@@ -13,6 +13,7 @@ public class ProjectDtoConverter {
                 .id(projectEntity.getId())
                 .name(projectEntity.getName())
                 .createdAt(projectEntity.getCreatedAt())
+                .updatedAt(projectEntity.getUpdatedAt())
                 .build();
     }
 
